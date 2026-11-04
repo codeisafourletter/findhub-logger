@@ -68,3 +68,7 @@ npm run check
 A complete operational verification requires a successful GitHub Actions run
 whose collection step reports JSON with `"ok":true`. Parser tests alone do not
 prove that the Google session or Sheet endpoint is currently working.
+
+## Reuse
+
+No open-source license has been granted for original repository code. Contact the owner before redistribution; third-party components retain their own licenses.
