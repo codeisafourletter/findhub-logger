@@ -7,6 +7,10 @@ The computer does not need to remain on.
 
 ## Status
 
+**2.0.0-rc.1 candidate:** adds offline setup diagnosis and private-data-safe failure
+reports. See [release notes and migration](docs/releases/2.0.0-rc.1.md). This
+candidate has not been accepted for live collection.
+
 Implemented; live collection currently needs a renewed Google sign-in. The
 2026-10-30 workflow failed because the Google session expired. Refresh it using
 the setup helper below. The scheduled workflow is also disabled for inactivity;
@@ -18,6 +22,20 @@ can be delayed or skipped; the five-minute interval is not a delivery guarantee.
 Use Node.js 22 and npm 10. From `cloud/`, run `npm ci` then `npm run check`.
 PR checks run offline without Google credentials. Production collection is a
 separate scheduled workflow.
+
+## Diagnose setup without collecting locations
+
+From `cloud/`, run `npm run doctor` with the configured values supplied through
+your normal secure environment. Use `npm run doctor -- --json` for automation.
+Missing or malformed configuration produces exit code 1 and names the checks
+to fix; no secret values are printed. The doctor reads local rolling state when
+present and otherwise inspects `AUTH_STATE_B64`. It does not contact Google or
+the Sheet receiver, and a passing result does not prove live authentication.
+
+Collector failures also publish fixed JSON codes and an actionable GitHub job
+summary. For example, `auth_refresh_required` means to refresh Google sign-in;
+`sheet_write_failed` means to check receiver setup before retrying. Private page
+text, coordinates, URLs, and raw remote errors are excluded from failure reports.
 
 ## Cloud runtime
 
