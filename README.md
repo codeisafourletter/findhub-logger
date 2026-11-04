@@ -1,15 +1,37 @@
-# Find Hub cloud location logger
+# Find Hub history & collector
 
-This project runs only in GitHub Actions. On an intended five-minute schedule, a GitHub-hosted
-Chrome session reads the location explicitly shared by `Meme` in Google Find
-Hub and appends a timestamped record to the configured private Google Sheet.
-The computer does not need to remain on.
+A private, local browser application for understanding collected location history,
+with an optional GitHub Actions collector that appends Google Find Hub observations
+to your private Google Sheet.
+
+## Explore history in two minutes
+
+Use Node.js 22 and npm 10:
+
+```sh
+cd cloud
+npm ci
+npm run history
+```
+
+Open **http://127.0.0.1:4173** and choose **Explore demo**, or import your own Sheet
+CSV / collector JSON. Select an entity to inspect its geographic path, last
+collection, source displayed age, timeline and collection gaps. Search by name
+or address, filter stale entities, and adjust freshness/gap thresholds.
+**Export all JSON** saves the full session; **Clear session** removes it from the tab.
+
+The app makes no external requests and does not save history in browser storage.
+Reloading clears the session. Imports replace existing data only after validation;
+exports contain private locations and should stay private. Demo records are explicitly
+synthetic, including exported demo JSON. No Google authentication is required to explore.
+See [history guide and data format](docs/history.md).
 
 ## Status
 
-**2.0.0-rc.1 candidate:** adds offline setup diagnosis and private-data-safe failure
-reports. See [release notes and migration](docs/releases/2.0.0-rc.1.md). This
-candidate has not been accepted for live collection.
+**2.0.0-rc.2 candidate:** adds the usable local history application, retaining
+offline setup diagnosis and private-data-safe collector failures. See
+[release notes and migration](docs/releases/2.0.0-rc.2.md). This candidate has
+not been accepted for live collection.
 
 Implemented; live collection currently needs a renewed Google sign-in. The
 2026-10-30 workflow failed because the Google session expired. Refresh it using

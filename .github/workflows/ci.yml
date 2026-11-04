@@ -22,3 +22,6 @@ jobs:
           cache-dependency-path: cloud/package-lock.json
       - run: npm ci --ignore-scripts
       - run: npm run check
+      - run: npm run test:browser
+        env:
+          CHROME_BIN: /usr/bin/google-chrome

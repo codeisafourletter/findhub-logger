@@ -1,13 +1,15 @@
 {
   "name": "findhub-cloud-collector",
-  "version": "2.0.0-rc.1",
+  "version": "2.0.0-rc.2",
   "private": true,
   "type": "module",
   "scripts": {
     "auth": "node bootstrap-auth.mjs",
     "test": "node --test",
-    "check": "node --check run-once.mjs && node --check collector-core.mjs && node --check doctor.mjs && node --test",
-    "doctor": "node doctor.mjs"
+    "check": "node --check run-once.mjs && node --check ../app/app.mjs && node --test",
+    "doctor": "node doctor.mjs",
+    "history": "node serve-history.mjs",
+    "test:browser": "node browser-check.mjs"
   },
   "dependencies": {
     "playwright-core": "1.62.1"
