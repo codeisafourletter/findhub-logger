@@ -4,7 +4,13 @@ A private, local browser application for understanding collected location histor
 with an optional GitHub Actions collector that appends Google Find Hub observations
 to your private Google Sheet.
 
-## Explore history in two minutes
+## Explore without an account or installation
+
+Download `findhub-offline.html` and open it in a modern browser. Import a supported history CSV or JSON, explore records, then export and reopen the resulting JSON. The standalone page includes its styles and code and makes no network requests. It works independently of the optional collector and Google sign-in.
+
+To regenerate it from source, run `python3 tools/build_offline.py`. For local serving if your browser blocks local files, run `python3 -m http.server 4173 --bind 127.0.0.1` and open `http://127.0.0.1:4173/findhub-offline.html`.
+
+## Explore using Node
 
 Use Node.js 22 and npm 10:
 
@@ -28,7 +34,7 @@ See [history guide and data format](docs/history.md).
 
 ## Status
 
-**2.0.0-rc.2 candidate:** adds the usable local history application, retaining
+**2.0.0-rc.3 candidate:** adds the usable local history application, retaining
 offline setup diagnosis and private-data-safe collector failures. See
 [release notes and migration](docs/releases/2.0.0-rc.2.md). This candidate has
 not been accepted for live collection.
