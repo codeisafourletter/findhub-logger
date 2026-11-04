@@ -5,9 +5,14 @@
   "type": "module",
   "scripts": {
     "auth": "node bootstrap-auth.mjs",
-    "test": "node --test"
+    "test": "node --test",
+    "check": "node --check run-once.mjs && node --check collector-core.mjs && node --test"
   },
   "dependencies": {
     "playwright-core": "1.62.1"
-  }
+  },
+  "engines": {
+    "node": ">=22 <23"
+  },
+  "packageManager": "npm@10.9.9"
 }

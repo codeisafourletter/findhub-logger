@@ -32,7 +32,7 @@ jobs:
           key: findhub-auth-${{ vars.AUTH_STATE_EPOCH }}-${{ github.run_id }}
           restore-keys: |
             findhub-auth-${{ vars.AUTH_STATE_EPOCH }}-
-      - run: npm install --omit=dev --no-audit --no-fund
+      - run: npm ci --omit=dev --no-audit --no-fund
       - name: Collect Find Hub location
         run: node run-once.mjs
         env:

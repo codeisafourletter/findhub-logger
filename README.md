@@ -1,9 +1,22 @@
 # Find Hub cloud location logger
 
-This project runs only in GitHub Actions. Every five minutes, a GitHub-hosted
+This project runs only in GitHub Actions. On an intended five-minute schedule, a GitHub-hosted
 Chrome session reads the location explicitly shared by `Meme` in Google Find
 Hub and appends a timestamped record to the configured private Google Sheet.
 The computer does not need to remain on.
+
+## Status
+
+Implemented; live collection currently needs a renewed Google sign-in. The
+2026-10-30 workflow failed because the Google session expired. Refresh it using
+the setup helper below, then verify a successful collector run. GitHub schedules
+can be delayed or skipped; the five-minute interval is not a delivery guarantee.
+
+## Local checks
+
+Use Node.js 22 and npm 10. From `cloud/`, run `npm ci` then `npm run check`.
+PR checks run offline without Google credentials. Production collection is a
+separate scheduled workflow.
 
 ## Cloud runtime
 
@@ -49,7 +62,7 @@ Run the offline parser and encrypted-auth tests with:
 
 ```powershell
 Set-Location .\cloud
-npm test
+npm run check
 ```
 
 A complete operational verification requires a successful GitHub Actions run
