@@ -7,8 +7,8 @@ The computer does not need to remain on.
 
 ## Status
 
-**2.0.0-rc.1 candidate:** adds offline setup diagnosis and private-data-safe failure
-reports. See [release notes and migration](docs/releases/2.0.0-rc.1.md). This
+**2.0.0-rc.4 candidate:** adds offline setup diagnosis and private-data-safe failure
+reports. See [release notes and migration](docs/releases/2.0.0-rc.4.md). This
 candidate has not been accepted for live collection.
 
 Implemented; live collection currently needs a renewed Google sign-in. The
