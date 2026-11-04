@@ -3,26 +3,27 @@ const $ = id => document.getElementById(id);
 const escape = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const date = value => new Date(value).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' });
 const duration = minutes => minutes < 60 ? `${Math.round(minutes)} min` : minutes < 1440 ? `${(minutes / 60).toFixed(1)} hours` : `${(minutes / 1440).toFixed(1)} days`;
-let records = [], selected = '', demo = false;
+let records = [], selected = '', demo = false, revision = 0;
 function notify(message) { $('notice').textContent = message; }
 function load(next, isDemo, source) {
   records = next; selected = ''; demo = isDemo;
   notify(`${isDemo ? 'DEMO · Synthetic data, not your devices. ' : 'PRIVATE IMPORT · '}${source} ${records.length} unique records loaded. Only this tab holds them; reload or Clear session removes them.`);
   render();
 }
-$('demo').onclick = () => load(demoHistory(), true, 'Six illustrative observations with recent, stale and gap examples.');
+$('demo').onclick = () => { revision++; $('import').value = ''; load(demoHistory(), true, 'Six illustrative observations with recent, stale and gap examples.'); };
 $('import').onchange = async event => {
   const file = event.target.files[0]; if (!file) return;
-  try { if (file.size > 20 * 1024 * 1024) throw new Error('Choose a file smaller than 20 MB.'); const text = await file.text(); const isDemo = !file.name.toLowerCase().endsWith('.csv') && JSON.parse(text)?.demo === true; load(readHistory(text, file.name), isDemo, 'Import complete.'); }
-  catch(error) { notify(`Import not applied. ${error instanceof SyntaxError ? 'Invalid JSON. Choose a JSON array or CSV file.' : error.message} Your previous session is unchanged.`); }
-  finally { event.target.value = ''; }
+  const ownRevision = ++revision;
+  try { if (file.size > 20 * 1024 * 1024) throw new Error('Choose a file smaller than 20 MB.'); const text = await file.text(); if (ownRevision !== revision) return; const isDemo = !file.name.toLowerCase().endsWith('.csv') && JSON.parse(text)?.demo === true; load(readHistory(text, file.name), isDemo, 'Import complete.'); }
+  catch(error) { if (ownRevision !== revision) return; notify(`Import not applied. ${error instanceof SyntaxError ? 'Invalid JSON. Choose a JSON array or CSV file.' : error.message} Your previous session is unchanged.`); }
+  finally { if (ownRevision === revision) event.target.value = ''; }
 };
 $('export').onclick = () => {
   const url = URL.createObjectURL(new Blob([exportHistory(records, demo)], { type: 'application/json' }));
   const link = document.createElement('a'); link.href = url; link.download = demo ? 'findhub-demo-history.json' : 'findhub-private-history.json'; link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
   notify(`Exported ${records.length} records as ${demo ? 'synthetic demo' : 'private history'} JSON. The download contains locations; keep it private. Your tab session is still available.`);
 };
-$('clear').onclick = () => { records = []; selected = ''; demo = false; $('search').value = ''; $('filter').value = 'all'; notify('Session cleared. Previously downloaded files remain on your device.'); render(); };
+$('clear').onclick = () => { revision++; $('import').value = ''; records = []; selected = ''; demo = false; $('search').value = ''; $('filter').value = 'all'; notify('Session cleared. Previously downloaded files remain on your device.'); render(); };
 for (const id of ['search', 'filter', 'stale', 'gap']) $(id).addEventListener('input', render);
 function threshold(id, fallback) { const value = Number($(id).value); return Number.isFinite(value) && value >= 1 && value <= 10080 ? value : fallback; }
 function route(points) {

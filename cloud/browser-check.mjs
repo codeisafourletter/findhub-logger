@@ -31,7 +31,16 @@ try {
   await page.setViewportSize({width:390,height:844});
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
   assert.deepEqual(await page.evaluate(()=>({local:localStorage.length,session:sessionStorage.length})),{local:0,session:0});
-  await page.getByRole('button',{name:'Clear session'}).click(); assert.equal(await page.locator('#empty').isVisible(),true);
+  await page.evaluate(() => {
+    const original = File.prototype.text;
+    File.prototype.text = function() { if(this.name==='delayed.json') return new Promise(resolve => { window.finishDelayedImport = () => resolve('[{"captured_at":"2026-11-04T12:00:00Z","person":"Delayed fixture","latitude":10,"longitude":20}]'); }); return original.call(this); };
+  });
+  await page.locator('#import').setInputFiles({name:'delayed.json',mimeType:'application/json',buffer:Buffer.from('[]')});
+  await page.waitForFunction(()=>typeof window.finishDelayedImport==='function');
+  await page.getByRole('button',{name:'Clear session'}).click();
+  await page.evaluate(async()=>{window.finishDelayedImport(); await new Promise(resolve=>setTimeout(resolve,0));});
+  assert.equal(await page.locator('#empty').isVisible(),true);
+  assert.match(await page.locator('#notice').textContent(),/Session cleared/);
   await page.locator('#import').setInputFiles({name:'sheet.csv',mimeType:'text/csv',buffer:Buffer.from('captured_at,person,latitude,longitude\n2026-11-04T12:00:00Z,CSV phone,10,20')});
   await page.waitForFunction(()=>document.getElementById('notice').textContent.includes('PRIVATE IMPORT'));
   assert.match(await page.locator('.entity').textContent(),/CSV phone/);
