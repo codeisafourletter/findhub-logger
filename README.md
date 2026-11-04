@@ -58,7 +58,7 @@ schedule.
 
 ## Verification
 
-Run the offline parser and encrypted-auth tests with:
+Run the offline syntax checks and encrypted-auth tests with:
 
 ```powershell
 Set-Location .\cloud
