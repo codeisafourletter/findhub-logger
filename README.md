@@ -9,7 +9,8 @@ The computer does not need to remain on.
 
 Implemented; live collection currently needs a renewed Google sign-in. The
 2026-10-30 workflow failed because the Google session expired. Refresh it using
-the setup helper below, then verify a successful collector run. GitHub schedules
+the setup helper below. The scheduled workflow is also disabled for inactivity;
+re-enable it after refreshing authentication and verify a successful collector run. GitHub schedules
 can be delayed or skipped; the five-minute interval is not a delivery guarantee.
 
 ## Local checks
@@ -52,9 +53,10 @@ page is visible, and then press Enter in PowerShell. The helper uploads the new
 session directly to the `AUTH_STATE_B64` GitHub secret. The generated
 `cloud/auth-state.json` and Chrome profile are ignored by Git.
 
-After refreshing the session, manually run **Find Hub collector** once in the
-GitHub Actions tab and require a successful result before relying on its
-schedule.
+After refreshing the session, open **Actions → Find Hub collector** and choose
+**Enable workflow** if GitHub shows it as disabled. Then manually run it once
+and require a successful result before relying on its schedule. Offline CI does
+not refresh the Google session or re-enable collection.
 
 ## Verification
 
@@ -66,7 +68,7 @@ npm run check
 ```
 
 A complete operational verification requires a successful GitHub Actions run
-whose collection step reports JSON with `"ok":true`. Parser tests alone do not
+whose collection step reports JSON with `"ok":true`. Offline checks alone do not
 prove that the Google session or Sheet endpoint is currently working.
 
 ## Reuse
